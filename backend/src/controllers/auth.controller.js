@@ -13,7 +13,7 @@ export const signupRoute = async (req, res) => {
 
   try {
     if (!fullName || !email || !password) {
-      res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields required" });
     }
     if (password.length < 6) {
       res.status(400).json({ message: "Password Must be 6 Characters" });
@@ -54,7 +54,7 @@ export const loginRoute = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
@@ -159,5 +159,80 @@ export const updateProfilePhoto = async (req, res) => {
   } catch (error) {
     console.error("Profile photo update error:", error);
     res.status(500).json({ message: "Error updating profile photo" });
+  }
+};
+
+export const followRoute = async (req, res) => {
+  try {
+    const userIdToFollow = req.params.id;
+    const userId = req.user._id;
+
+    // Check if already following
+    if (req.user.following.includes(userIdToFollow)) {
+      return res.status(400).json({ message: "Already following this user" });
+    }
+
+    // Update the following and followers array
+    await User.findByIdAndUpdate(userId, {
+      $push: { following: userIdToFollow },
+    });
+    await User.findByIdAndUpdate(userIdToFollow, {
+      $push: { followers: userId },
+    });
+
+    res.status(200).json({ message: "Followed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const unfollowRoute = async (req, res) => {
+  try {
+    const userIdToUnfollow = req.params.id;
+    const userId = req.user._id;
+
+    // Check if not following
+    if (!req.user.following.includes(userIdToUnfollow)) {
+      return res.status(400).json({ message: "Not following this user" });
+    }
+
+    // Update the following and followers array
+    await User.findByIdAndUpdate(userId, {
+      $pull: { following: userIdToUnfollow },
+    });
+    await User.findByIdAndUpdate(userIdToUnfollow, {
+      $pull: { followers: userId },
+    });
+
+    res.status(200).json({ message: "Unfollowed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const followerRoute = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate(
+      "followers",
+      "fullName email profilePhoto"
+    );
+    res.status(200).json(user.followers);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error " + error });
+  }
+};
+
+export const followingRoute = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate(
+      "following",
+      "fullName email profilePhoto"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+    res.status(200).json(user.following);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" + error });
   }
 };

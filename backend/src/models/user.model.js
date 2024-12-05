@@ -31,6 +31,8 @@ const userSchema = new mongoose.Schema(
       message: (props) => `${props.value} is not a valid URL`,
       required: false,
     },
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

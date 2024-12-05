@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import defaultAvatar from "../../public/avatar.png";
 import { Camera, LinkIcon } from "lucide-react";
+import { axiosInstance } from "../lib/axios"; // Ensure axiosInstance is imported
 
 export default function Profile() {
   const { authUser, updateProfile, updateProfilePhoto, isUpdatingProfile } =
@@ -46,13 +47,41 @@ export default function Profile() {
     return `${import.meta.env.VITE_BACKEND_URL}${photoPath}`;
   };
 
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+
+  useEffect(() => {
+    const fetchFollowers = async () => {
+      const res = await axiosInstance.get("/auth/followers");
+      setFollowers(res.data);
+    };
+
+    const fetchFollowing = async () => {
+      const res = await axiosInstance.get("/auth/following");
+      setFollowing(res.data);
+    };
+
+    fetchFollowers();
+    fetchFollowing();
+  }, []);
+
+  const handleFollow = async (userId) => {
+    await axiosInstance.post(`/auth/follow/${userId}`);
+    setFollowing((prev) => [...prev, userId]);
+  };
+
+  const handleUnfollow = async (userId) => {
+    await axiosInstance.post(`/auth/unfollow/${userId}`);
+    setFollowing((prev) => prev.filter((id) => id !== userId));
+  };
+
   return (
     <div className="min-h-screen bg-base-200 py-8">
       <div className="max-w-2xl mx-auto">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl font-bold text-center mb-6">
-              Profile
+              {authUser?.fullName}'s Profile
             </h2>
 
             {/* Profile Photo Section */}
@@ -88,22 +117,31 @@ export default function Profile() {
               </div>
 
               <div>
-                <p className="text-lg font-semibold">Follower</p>
-                <div>432</div>
+                <p className="text-lg font-semibold">Followers</p>
+                <div>{followers.length}</div>
               </div>
               <div>
                 <p className="text-lg font-semibold">Following</p>
-                <div>342</div>
+                <div>{following.length}</div>
               </div>
-              <div>
-                <p className="text-lg font-semibold">Links</p>
-                <div>
-                  <LinkIcon
-                    href="{formatDate.links}"
-                    className="size-5 cursor-pointer"
-                  ></LinkIcon>
-                </div>
-              </div>
+            </div>
+
+            {/* Links Section */}
+            <div>
+              <p className="text-lg font-semibold">Links</p>
+              {authUser?.links && authUser.links.startsWith("http") ? (
+                <a
+                  href={authUser.links}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2"
+                >
+                  <LinkIcon className="size-5 cursor-pointer" />
+                  <span>{authUser.links}</span>
+                </a>
+              ) : (
+                <span>No valid links available</span>
+              )}
             </div>
 
             {/* Profile Information */}

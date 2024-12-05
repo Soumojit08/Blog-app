@@ -107,6 +107,7 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
+          error.response?.data?.error ||
           error.message ||
           "Failed to update profile photo"
       );

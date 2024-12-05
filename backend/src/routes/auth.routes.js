@@ -1,9 +1,13 @@
 import express from "express";
 import {
   checkRoute,
+  followerRoute,
+  followingRoute,
+  followRoute,
   loginRoute,
   logoutRoute,
   signupRoute,
+  unfollowRoute,
   updateProfile,
   updateProfilePhoto,
 } from "../controllers/auth.controller.js";
@@ -26,5 +30,10 @@ router.patch(
   updateProfilePhoto
 );
 
+router.post("/follow/:id", protectRoute, followRoute);
+router.post("/unfollow/:id", protectRoute, unfollowRoute);
+
+router.get("/followers", protectRoute, followerRoute);
+router.get("/following", protectRoute, followingRoute);
 
 export default router;
