@@ -125,7 +125,7 @@ const Navbar = () => {
 
       {/* search result  */}
       {searchResults.length > 0 && (
-        <div className="absolute bg-base-300 shadow-lg rounded-lg mt-2 w-3/12">
+        <div className="absolute bg-base-300 shadow-lg rounded-md mt-2 w-80 p-2 text-lg capitalize left-3/4 ml-2">
           {searchResults.map((user) => (
             <Link
               to={`/profile/${user._id}`}
