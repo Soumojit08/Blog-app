@@ -124,24 +124,23 @@ export default function Profile() {
                 <p className="text-lg font-semibold">Following</p>
                 <div>{following.length}</div>
               </div>
-            </div>
 
-            {/* Links Section */}
-            <div>
-              <p className="text-lg font-semibold">Links</p>
-              {authUser?.links && authUser.links.startsWith("http") ? (
-                <a
-                  href={authUser.links}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-2"
-                >
-                  <LinkIcon className="size-5 cursor-pointer" />
-                  <span>{authUser.links}</span>
-                </a>
-              ) : (
-                <span>No valid links available</span>
-              )}
+              {/* Links Section */}
+              <div>
+                <p className="text-lg font-semibold">Links</p>
+                {authUser?.links && authUser.links.startsWith("http") ? (
+                  <a
+                    href={authUser.links}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2"
+                  >
+                    <LinkIcon className="size-5 cursor-pointer" />
+                  </a>
+                ) : (
+                  <span>No valid links available</span>
+                )}
+              </div>
             </div>
 
             {/* Profile Information */}
