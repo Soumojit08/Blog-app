@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import { mkdirSync } from "fs";
+import userRoutes from "./routes/user.routes.js";
 
 dotenv.config();
 const app = express();
@@ -20,9 +21,11 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 //CORS
 app.use(
@@ -34,16 +37,21 @@ app.use(
   })
 );
 
-app.use('/uploads', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
-  res.header('Access-Control-Allow-Methods', 'GET');
-  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
-  next();
-}, express.static(path.join(__dirname, '../uploads')));
+app.use(
+  "/uploads",
+  (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+    res.header("Access-Control-Allow-Methods", "GET");
+    res.header("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static(path.join(__dirname, "../uploads"))
+);
 const uploadDir = path.join(__dirname, "uploads", "profile-photos");
 mkdirSync(uploadDir, { recursive: true });
 
 //Routes
+app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoute);
 
 //404 handler

@@ -1,13 +1,39 @@
-import React from "react";
-import { Rss, LogOut, User, HomeIcon } from "lucide-react"; // Add User import
+import React, { useState } from "react";
+import { Rss, LogOut, User, HomeIcon, Search } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Link, useLocation } from "react-router-dom"; // Add this import
+import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../lib/axios";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const isInProfilePage = location.pathname === "/profile";
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  const handleSearch = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.length > 2) {
+      try {
+        const response = await axiosInstance.get(`/users/search?name=${query}`);
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
 
   return (
     <div>
@@ -58,6 +84,15 @@ const Navbar = () => {
         </div>
         {authUser && (
           <div className="navbar-end">
+            <div className="form-control">
+              <input
+                type="text"
+                placeholder="Search"
+                className="input input-bordered w-24 md:w-auto"
+                value={searchQuery}
+                onChange={handleSearch}
+              />
+            </div>
             {/* Add Profile Link */}
             {isInProfilePage ? (
               <Link to="/" className="btn btn-ghost btn-circle text-xl">
@@ -69,35 +104,39 @@ const Navbar = () => {
               </Link>
             )}
 
-            <button
-              className="btn btn-ghost btn-circle text-xl"
-              onClick={logout}
-            >
-              <LogOut className="size-5" />
-            </button>
-
-            <button className="btn btn-ghost btn-circle text-xl">
-              <div className="indicator">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-                <span className="badge badge-xs badge-primary indicator-item hidden"></span>
-              </div>
-            </button>
+            {isInProfilePage ? (
+              <button
+                className="btn btn-ghost btn-circle text-xl"
+                onClick={handleLogout}
+              >
+                <LogOut className="size-5" />
+              </button>
+            ) : (
+              <button
+                className="btn btn-ghost btn-circle text-xl"
+                onClick={logout}
+              >
+                <LogOut className="size-5" />
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      {/* search result  */}
+      {searchResults.length > 0 && (
+        <div className="absolute bg-base-300 shadow-lg rounded-lg mt-2 w-3/12">
+          {searchResults.map((user) => (
+            <Link
+              to={`/profile/${user._id}`}
+              key={user._id}
+              className="block p-2 hover:bg-base-200"
+            >
+              {user.fullName}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

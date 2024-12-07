@@ -14,6 +14,7 @@ import {
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { upload } from "../utils/upload.js";
 
+
 const router = express.Router();
 
 router.post("/signup", signupRoute);
@@ -35,5 +36,6 @@ router.post("/unfollow/:id", protectRoute, unfollowRoute);
 
 router.get("/followers", protectRoute, followerRoute);
 router.get("/following", protectRoute, followingRoute);
+
 
 export default router;
