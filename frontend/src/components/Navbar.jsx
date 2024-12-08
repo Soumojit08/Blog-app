@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Rss, LogOut, User, HomeIcon, Search } from "lucide-react";
+import { Rss, LogOut, User, HomeIcon } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Link, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
+import defaultPhoto from "../../public/avatar.png";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
@@ -125,14 +125,19 @@ const Navbar = () => {
 
       {/* search result  */}
       {searchResults.length > 0 && (
-        <div className="absolute bg-base-300 shadow-lg rounded-md mt-2 w-80 p-2 text-lg capitalize left-3/4 ml-2">
+        <div className="absolute bg-base-300 shadow-lg rounded-md mt-2 w-80 p-2 text-lg capitalize left-3/4 ml-2 z-50">
           {searchResults.map((user) => (
             <Link
               to={`/profile/${user._id}`}
               key={user._id}
-              className="block p-2 hover:bg-base-200"
+              className=" p-2 hover:bg-base-200 flex items-center justify-start"
             >
-              {user.fullName}
+              <img
+                src={defaultPhoto}
+                alt={user.fullName}
+                className="w-8 h-8 rounded-full mr-3"
+              />
+              <span>{user.fullName}</span>
             </Link>
           ))}
         </div>
