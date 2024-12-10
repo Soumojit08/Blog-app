@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import UserProfile from "./components/UserProfile";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -30,7 +31,6 @@ const App = () => {
   return (
     <div className="max-h-screen overflow-hidden">
       <Navbar />
-
       <Routes>
         <Route
           path="/"
@@ -45,7 +45,8 @@ const App = () => {
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:userId" element={<UserProfile />} />
       </Routes>
 
       <Toaster />
