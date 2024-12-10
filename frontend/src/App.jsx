@@ -13,6 +13,7 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import UserProfile from "./components/UserProfile";
+import PostFormPage from "./components/PostFormPage";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -47,6 +48,8 @@ const App = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/posts" element={<PostFormPage />} /> 
       </Routes>
 
       <Toaster />
