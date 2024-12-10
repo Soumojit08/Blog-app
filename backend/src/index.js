@@ -7,8 +7,9 @@ import { connectToDB } from "./utils/db.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import { mkdirSync } from "fs";
+// import { mkdirSync } from "fs";
 import userRoutes from "./routes/user.routes.js";
+import postRoutes from "./routes/post.routes.js";
 
 dotenv.config();
 const app = express();
@@ -52,6 +53,7 @@ app.use(
 
 //Routes
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoute);
 
 //404 handler
