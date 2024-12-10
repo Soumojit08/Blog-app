@@ -138,12 +138,18 @@ export const updateProfilePhoto = async (req, res) => {
 
     // Delete old profile photo if it exists
     if (user.profilePhoto) {
+      const oldPhotoPath = path.join(__dirname, "../", user.profilePhoto);
       try {
-        const oldPhotoPath = path.join(__dirname, "../../", user.profilePhoto);
+        // Check if the file exists
+        await fs.access(oldPhotoPath);
+        // If it exists, delete it
         await fs.unlink(oldPhotoPath);
       } catch (error) {
-        console.error("Error deleting old photo:", error);
-        // Continue execution even if old photo deletion fails
+        if (error.code === "ENOENT") {
+          console.error("File does not exist:", oldPhotoPath);
+        } else {
+          console.error("Error deleting old photo:", error);
+        }
       }
     }
 

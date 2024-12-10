@@ -3,7 +3,7 @@ import { Rss, LogOut, User, HomeIcon } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
-import defaultPhoto from "../../public/avatar.png";
+import defaultAvatar from "../../public/avatar.png";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
@@ -133,7 +133,11 @@ const Navbar = () => {
               className=" p-2 hover:bg-base-200 flex items-center justify-start"
             >
               <img
-                src={defaultPhoto}
+                src={
+                  user.profilePhoto
+                    ? `http://localhost:3001${user.profilePhoto}`
+                    : defaultAvatar
+                }
                 alt={user.fullName}
                 className="w-8 h-8 rounded-full mr-3"
               />

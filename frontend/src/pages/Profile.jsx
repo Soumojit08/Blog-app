@@ -88,11 +88,11 @@ export default function Profile() {
             <div className="flex justify-between px-4 items-center mb-6">
               <div className="relative">
                 <div className="avatar">
-                  <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <div className="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
                     <img
                       src={getPhotoUrl(authUser?.profilePhoto)}
                       alt="Profile"
-                      className="object-cover"
+                      className="object-cover w-full h-full max-w-full max-h-full"
                       onClick={handlePhotoClick}
                       onError={(e) => {
                         e.target.onerror = null;

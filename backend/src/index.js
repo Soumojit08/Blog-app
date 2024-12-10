@@ -45,10 +45,10 @@ app.use(
     res.header("Cross-Origin-Resource-Policy", "cross-origin");
     next();
   },
-  express.static(path.join(__dirname, "../uploads"))
+  express.static(path.join(__dirname, "uploads"))
 );
-const uploadDir = path.join(__dirname, "uploads", "profile-photos");
-mkdirSync(uploadDir, { recursive: true });
+// const uploadDir = path.join(__dirname, "uploads", "profile-photos");
+// mkdirSync(uploadDir, { recursive: true });
 
 //Routes
 app.use("/api/users", userRoutes);
