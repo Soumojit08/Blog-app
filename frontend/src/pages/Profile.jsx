@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import defaultAvatar from "../../public/avatar.png";
 import { Camera, LinkIcon } from "lucide-react";
 import { axiosInstance } from "../lib/axios"; // Ensure axiosInstance is imported
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const { authUser, updateProfile, updateProfilePhoto, isUpdatingProfile } =
@@ -15,6 +16,7 @@ export default function Profile() {
     links: authUser?.links || "",
   });
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,6 +75,10 @@ export default function Profile() {
   const handleUnfollow = async (userId) => {
     await axiosInstance.post(`/auth/unfollow/${userId}`);
     setFollowing((prev) => prev.filter((id) => id !== userId));
+  };
+
+  const handleYourPostsClick = () => {
+    navigate("/your-posts");
   };
 
   return (
@@ -267,12 +273,19 @@ export default function Profile() {
                   </div>
                 </div>
 
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-2 gap-3">
                   <button
                     onClick={() => setIsEditing(true)}
                     className="btn btn-primary"
                   >
                     Edit Profile
+                  </button>
+
+                  <button
+                    className="btn btn-accent"
+                    onClick={handleYourPostsClick}
+                  >
+                    Your Posts
                   </button>
                 </div>
               </div>

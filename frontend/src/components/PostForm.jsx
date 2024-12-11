@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../lib/axios";
+import {toast} from "react-hot-toast"
 
 const PostForm = ({ onClose }) => {
   const [title, setTitle] = useState("");
@@ -15,6 +16,7 @@ const PostForm = ({ onClose }) => {
         tags: tags.split(",").map((tag) => tag.trim()), // Convert tags to an array
       });
       console.log("Post created:", response.data);
+      toast.success("Post Uploaded Successfully")
       // Reset the form fields
       setTitle("");
       setContent("");
@@ -22,6 +24,7 @@ const PostForm = ({ onClose }) => {
       if (onClose) onClose(); // Close the modal after submission
     } catch (error) {
       console.error("Error creating post:", error);
+      toast.error("Failed to create post");
     }
   };
 

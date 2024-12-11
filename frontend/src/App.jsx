@@ -14,6 +14,8 @@ import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import UserProfile from "./components/UserProfile";
 import PostFormPage from "./components/PostFormPage";
+import YourPosts from "./components/YourPost";
+import UpdatePost from "./components/UpdatePost";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -49,7 +51,9 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/posts" element={<PostFormPage />} /> 
+        <Route path="/posts" element={<PostFormPage />} />
+        <Route path="/your-posts" element={<YourPosts />} />
+        <Route path="/posts/:postId" element={<UpdatePost />} />
       </Routes>
 
       <Toaster />
