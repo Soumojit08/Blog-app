@@ -1,16 +1,22 @@
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
+
+// Use your MongoDB URI
+const MONGO_URI =
+  "mongodb+srv://soumojitbanerjee08:Dxtwevba9lqDC80L@cluster0.zw4mm.mongodb.net/blog-app?retryWrites=true&w=majority&appName=Cluster0";
+
+const DEFAULT_AVATAR = "/uploads/profile-photos/avatar.png";
 
 const generateUsers = async (num) => {
   const users = [];
   for (let i = 0; i < num; i++) {
     users.push({
-      fullName: faker.name.findName(),
+      fullName: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      profilePhoto: faker.image.avatar(),
+      profilePhoto: DEFAULT_AVATAR, // Set default avatar
       bio: faker.lorem.sentence(),
       links: faker.internet.url(),
     });
@@ -33,10 +39,7 @@ const generatePosts = async (num, users) => {
 };
 
 const generateMockData = async () => {
-  await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(MONGO_URI);
 
   const users = await generateUsers(10); // Generate 10 users
   await generatePosts(20, users); // Generate 20 posts

@@ -34,7 +34,7 @@ const PostList = () => {
             <p className="text-gray-300">{post.content}</p>
             <p className="text-gray-600">By {post.author.fullName}</p>
             <p className="text-gray-500">
-              {new Date(post.createdAt).toLocaleDateString()}
+              {new Date(post.createdAt).toLocaleString()}
             </p>
           </div>
         ))
