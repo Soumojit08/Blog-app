@@ -19,35 +19,29 @@ export const createPost = async (req, res) => {
   }
 };
 
-// Get all posts
+// Get all posts or filter by author
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate("author", "fullName profilePhoto")
-      .sort({ createdAt: -1 });
+    const authorId = req.query.author; // Get author ID from query parameters
+    const posts = authorId
+      ? await Post.find({ author: authorId }).populate("author", "fullName profilePhoto").sort({ createdAt: -1 })
+      : await Post.find().populate("author", "fullName profilePhoto").sort({ createdAt: -1 });
     res.status(200).json(posts);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching posts", error: error.message });
+    res.status(500).json({ message: "Error fetching posts", error: error.message });
   }
 };
 
 // Get a single post by ID
 export const getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate(
-      "author",
-      "fullName profilePhoto"
-    );
+    const post = await Post.findById(req.params.id).populate("author", "fullName profilePhoto");
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
     res.status(200).json(post);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching post", error: error.message });
+    res.status(500).json({ message: "Error fetching post", error: error.message });
   }
 };
 

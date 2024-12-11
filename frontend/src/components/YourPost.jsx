@@ -49,19 +49,21 @@ const YourPosts = () => {
         posts.map((post) => (
           <div
             key={post._id}
-            className="post-card bg-base-100 shadow-md rounded-lg p-4 mb-4"
+            className="post-card bg-base-100 shadow-md rounded-lg p-6 leading-10 mb-4  transition-transform transform "
           >
-            <h3 className="text-xl font-semibold">{post.title}</h3>
-            <p>{post.content}</p>
+            <h3 className="text-2xl  font-semibold text-gray-200 mb-1">
+              {post.title}
+            </h3>
+            <p className="text-gray-300 text-lg mb-3">{post.content}</p>
             <div className="flex justify-between">
               <button
-                className="btn btn-secondary"
+                className="btn btn-success"
                 onClick={() => handleUpdatePost(post._id)}
               >
                 Update
               </button>
               <button
-                className="btn btn-danger"
+                className="btn btn-error"
                 onClick={() => handleDeletePost(post._id)}
               >
                 Delete
