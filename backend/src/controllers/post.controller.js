@@ -2,17 +2,23 @@ import Post from "../models/post.model.js";
 
 // Create a new post
 export const createPost = async (req, res) => {
+  console.log("Request Body:", req.body);
+  console.log("Uploaded File:", req.files);
+
   try {
     const newPost = new Post({
       title: req.body.title,
       content: req.body.content,
-      author: req.user._id, // Get the author from the authenticated user
+      author: req.user._id,
       tags: req.body.tags || [],
+      image: req.files.image ? req.files.image[0].path : null, // Access image correctly
+      video: req.files.video ? req.files.video[0].path : null, // Access video correctly
     });
 
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
+    console.error("Error creating post:", error); // Log the error for debugging
     res
       .status(500)
       .json({ message: "Error creating post", error: error.message });

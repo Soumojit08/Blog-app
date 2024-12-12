@@ -1,36 +1,42 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../lib/axios";
-import {toast} from "react-hot-toast"
+import { toast } from "react-hot-toast";
 
 const PostForm = ({ onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
+  const [image, setImage] = useState(null);
+  const [video, setVideo] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append(
+      "tags",
+      tags.split(",").map((tag) => tag.trim())
+    );
+    if (image) formData.append("image", image);
+    if (video) formData.append("video", video);
+
     try {
-      const response = await axiosInstance.post("/posts", {
-        title,
-        content,
-        tags: tags.split(",").map((tag) => tag.trim()), // Convert tags to an array
+      const response = await axiosInstance.post("/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      console.log("Post created:", response.data);
-      toast.success("Post Uploaded Successfully")
-      // Reset the form fields
-      setTitle("");
-      setContent("");
-      setTags("");
-      if (onClose) onClose(); // Close the modal after submission
+      toast.success("Post created successfully!");
+      onClose(); // Call the onClose function to navigate back
     } catch (error) {
-      console.error("Error creating post:", error);
-      toast.error("Failed to create post");
+      console.error("Error creating post:", response.data);
+      toast.error("Failed to create post.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="post-form mb-4">
-      <h2 className="text-2xl font-bold">Create a New Post</h2>
+    <form onSubmit={handleSubmit}>
       <div className="form-control mb-2">
         <label className="label">Title</label>
         <input
@@ -56,6 +62,24 @@ const PostForm = ({ onClose }) => {
           type="text"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
+          className="input input-bordered w-full"
+        />
+      </div>
+      <div className="form-control mb-2">
+        <label className="label">Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="input input-bordered w-full"
+        />
+      </div>
+      <div className="form-control mb-2">
+        <label className="label">Video</label>
+        <input
+          type="file"
+          accept="video/*"
+          onChange={(e) => setVideo(e.target.files[0])}
           className="input input-bordered w-full"
         />
       </div>

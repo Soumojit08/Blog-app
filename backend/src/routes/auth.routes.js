@@ -12,8 +12,7 @@ import {
   updateProfilePhoto,
 } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
-import { upload } from "../utils/upload.js";
-
+import { uploadPhoto } from "../utils/upload.js";
 
 const router = express.Router();
 
@@ -27,7 +26,7 @@ router.patch("/profile", protectRoute, updateProfile);
 router.patch(
   "/profile/photo",
   protectRoute,
-  upload.single("photo"),
+  uploadPhoto.single("photo"),
   updateProfilePhoto
 );
 
@@ -36,6 +35,5 @@ router.post("/unfollow/:id", protectRoute, unfollowRoute);
 
 router.get("/followers", protectRoute, followerRoute);
 router.get("/following", protectRoute, followingRoute);
-
 
 export default router;

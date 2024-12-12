@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   createPost,
   getPosts,
@@ -7,8 +8,26 @@ import {
   deletePost,
 } from '../controllers/post.controller.js';
 import { protectRoute } from '../middlewares/auth.middleware.js';
+import { uploadPhoto, uploadVideo } from "../utils/upload.js";
 
 const router = express.Router();
+
+router.post(
+  "/",
+  protectRoute,
+  (req, res, next) => {
+    const upload = multer().fields([{ name: "image" }, { name: "video" }]);
+    upload(req, res, (err) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ message: "Error uploading files", error: err.message });
+      }
+      next();
+    });
+  },
+  createPost
+);
 
 // Create a new post
 router.post('/', protectRoute, createPost);
